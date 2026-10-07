@@ -126,14 +126,12 @@ Ce TP a pour but d'analyser le comportement de cette liaison sur un smartphone c
 % ===================== 2. MATÉRIEL ET MÉTHODE =====================
 \section{Mat\'eriel et m\'ethode}
 
-Les mesures ont \'et\'e effectu\'ees en salle de TP et dans les b\^atiments de l'\'ecole avec le mat\'eriel suivant :
+Les mesures ont \'et\'e r\'ealis\'ees \`a domicile et aux abords du logement avec le mat\'eriel suivant :
 \begin{itemize}
     \item \textbf{Terminal mobile :} Smartphone OPPO A3s (mod\`ele CPH1803), fonctionnant sous Android 8.1.0 ;
     \item \textbf{Cartes SIM :} Deux cartes SIM actives d'op\'erateurs distincts : SIM 1 sur le r\'eseau Yas (Telma) et SIM 2 sur le r\'eseau Orange Madagascar ;
-    \item \textbf{Applications d'ing\'enierie radio :} Cell Monitor pour l'extraction compl\`ete des identifiants cellulaires, et Cell Signal Monitoring pour le suivi dynamique de la puissance.
+    \item \textbf{Applications d'ing\'enierie radio :} Cell Monitor pour l'extraction des identifiants cellulaires, et Cell Signal Monitoring pour le suivi de la puissance.
 \end{itemize}
-
-Le r\'ecepteur GPS du terminal a \'et\'e activ\'e conform\'ement aux exigences d'Android pour acc\'eder aux informations radio. Les applications fonctionnent en lecture seule sans modifier les param\`etres internes de l'appareil. Les donn\'ees personnelles comme les num\'eros IMEI et de ligne priv\'ee sont masqu\'ees sur les captures d'\'ecran.
 
 \newpage
 % ===================== 3. PARTIE A =====================
@@ -194,7 +192,7 @@ Pour la SIM 2, les deux applications confirment exactement les m\^emes valeurs d
 
 \subsection{Mesures en technologie 2G (GSM/EDGE)}
 
-Le smartphone a ensuite \'et\'e configur\'e en for\c{c}ant le mode 2G uniquement dans les param\`etres r\'eseau. Les relev\'es ont \'et\'e r\'ealis\'es \`a 12\,h\,19 en salle de TP. Les captures d'\'ecran correspondantes sont pr\'esent\'ees sur les figures~\ref{fig:capture_a2_sim1} et~\ref{fig:capture_a2_sim2}.
+Le smartphone a ensuite \'et\'e configur\'e en for\c{c}ant le mode 2G uniquement dans les param\`etres r\'eseau. Les relev\'es ont \'et\'e r\'ealis\'es \`a 12\,h\,19 \`a l'int\'erieur du logement. Les captures d'\'ecran correspondantes sont pr\'esent\'ees sur les figures~\ref{fig:capture_a2_sim1} et~\ref{fig:capture_a2_sim2}.
 
 \begin{figure}[H]
     \centering
@@ -240,7 +238,7 @@ RxQual / BER & Non affich\'e & Non affich\'e \\
 
 La mention GSM affich\'ee dans Cell Monitor et EDGE dans Cell Signal Monitoring d\'esigne la m\^eme famille d'acc\`es radio 2G : GSM correspond au r\'eseau cellulaire d'origine, tandis qu'EDGE repr\'esente l'\'evolution du d\'ebit de donn\'ees par paquets sur cette m\^eme infrastructure.
 
-\subsection{R\'eponses d\'etaill\'ees aux questions de la Partie A}
+\subsection{R\'eponses aux questions}
 
 \paragraph{1. Identification du pays et des op\'erateurs \`a partir du MCC et du MNC}
 Le code MCC (Mobile Country Code) 646 identifie Madagascar selon le plan de num\'erotation international ITU E.212. Le code MNC (Mobile Network Code) distingue l'op\'erateur national :
@@ -308,7 +306,7 @@ Les mesures ont \'et\'e enregistr\'ees en technologie 4G LTE \`a l'aide de l'app
     \begin{minipage}[b]{0.47\textwidth}
         \centering
         \includegraphics[height=8.5cm, keepaspectratio]{TP1-GSM_B_Salle_Interieur.jpeg}
-        \caption{Niveau de signal stabilis\'e dans la salle de TP (point 3)}
+        \caption{Niveau de signal stabilis\'e dans la pi\`ece principale (point 3)}
         \label{fig:capture_b_salle}
     \end{minipage}
     \hfill
@@ -335,7 +333,7 @@ Le tableau~\ref{tab:mesures_partie_b} consigne les niveaux de signal mesur\'es e
 \midrule
 1 & Ext\'erieur, parcours & 4G & 413002-21 & -102 & 38 & Moyen \\
 2 & Pr\`es d'une fen\^etre & 4G & 413137-11 & -78 & 62 & Bon \\
-3 & Centre de la salle de TP & 4G & 413137-11 & -88 & 52 & Bon / Moyen \\
+3 & Pi\`ece principale (int\'erieur) & 4G & 413137-11 & -88 & 52 & Bon / Moyen \\
 4 & Couloir int\'erieur & 4G & 413137-11 & -94 & 46 & Moyen \\
 5 & Sous-sol (point le plus masqu\'e) & 4G & 413091-12 & -111 & 29 & Faible \\
 6 & \'Etage \'elev\'e accessible & 4G & 413002-21 & -74 & 66 & Bon \\
@@ -389,7 +387,7 @@ La figure~\ref{fig:histogramme_b} illustre les niveaux de puissance re\c{c}us (R
 L'histogramme met en \'evidence l'influence directe des obstacles physiques sur la r\'eception radio :
 \begin{itemize}
     \item \textbf{\'Etage \'elev\'e et fen\^etre (P6 et P2) :} Ces points offrent les niveaux les plus \'elev\'es ($-74\text{ dBm}$ et $-78\text{ dBm}$), car le trajet vers les stations de base est peu encombr\'e et dispose d'ouvertures directes.
-    \item \textbf{Int\'erieur du b\^atiment (P3 et P4) :} Au centre de la salle de TP, le niveau s'\'etablit \`a $-88\text{ dBm}$ pour Yas (et $-68\text{ dBm}$ pour Orange). Dans le couloir sans fen\^etres, la puissance d\'ecro\^it davantage pour atteindre $-94\text{ dBm}$.
+    \item \textbf{Int\'erieur du logement (P3 et P4) :} Au centre de la pi\`ece principale, le niveau s'\'etablit \`a $-88\text{ dBm}$ pour Yas (et $-68\text{ dBm}$ pour Orange). Dans le couloir sans fen\^etres, la puissance d\'ecro\^it davantage pour atteindre $-94\text{ dBm}$.
     \item \textbf{Sous-sol (P5) :} Ce point constitue la zone la plus p\'enalisante avec $-111\text{ dBm}$ sur Yas et $-110\text{ dBm}$ sur Orange. Les dalles de b\'eton arm\'e absorbent la quasi-totalit\'e du signal.
     \item \textbf{Comportement pendant l'appel (P8) :} Au d\'eclenchement de l'appel voix au point 3, le terminal bascule imm\'ediatement en 3G (H+) \`a $-66\text{ dBm}$.
 \end{itemize}
@@ -399,7 +397,7 @@ L'att\'enuation des parois se mesure en comparant un point d'entr\'ee favorable 
 \begin{equation}
     L_{\text{parois}} = P_{\text{fen\^etre}} - P_{\text{couloir}} = (-78\text{ dBm}) - (-94\text{ dBm}) = 16\text{ dB}
 \end{equation}
-Entre la salle int\'erieure et le sous-sol enterr\'e, la barri\`ere constitu\'ee par le sol en b\'eton arm\'e absorbe :
+Entre la pi\`ece principale et le sous-sol enterr\'e, la barri\`ere constitu\'ee par le sol en b\'eton arm\'e absorbe :
 \begin{equation}
     L_{\text{sous-sol}} = P_{\text{salle}} - P_{\text{sous-sol}} = (-88\text{ dBm}) - (-111\text{ dBm}) = 23\text{ dB}
 \end{equation}
@@ -427,11 +425,11 @@ La conversion d'un \'ecart en dB vers un rapport de puissance lin\'eaire v\'erif
 \begin{itemize}
     \item Pour un \'ecart de 3 dB : $\frac{P_2}{P_1} = 10^{0{,}3} \approx 2$. Une diff\'erence de 3 dB correspond \`a doubler ou diviser par deux la puissance re\c{c}ue.
     \item Pour un \'ecart de 10 dB : $\frac{P_2}{P_1} = 10^1 = 10$. La puissance est multipli\'ee ou divis\'ee exactement par dix.
-    \item \textbf{Application aux mesures du TP :} Entre la salle de TP ($-88\text{ dBm}$) et le sous-sol ($-111\text{ dBm}$), l'\'ecart est de $\Delta P = 23\text{ dB}$. Le rapport de puissance s'\'etablit \`a :
+    \item \textbf{Application aux mesures :} Entre la pi\`ece principale ($-88\text{ dBm}$) et le sous-sol ($-111\text{ dBm}$), l'\'ecart est de $\Delta P = 23\text{ dB}$. Le rapport de puissance s'\'etablit \`a :
     \begin{equation}
         \frac{P_{\text{salle}}}{P_{\text{sous-sol}}} = 10^{23/10} = 10^{2{,}3} \approx 200
     \end{equation}
-    La puissance du signal capt\'ee dans la salle est donc 200 fois plus \'elev\'ee que celle parvenant au sous-sol.
+    La puissance du signal capt\'ee dans la pi\`ece principale est donc 200 fois plus \'elev\'ee que celle parvenant au sous-sol.
 \end{itemize}
 
 \paragraph{6. Limites du niveau de signal et analyse de l'appel (CSFB)}

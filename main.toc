@@ -4,7 +4,7 @@
 \contentsline {section}{\numberline {3}Partie A : Identification de la cellule serveuse}{3}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Mesures en technologie LTE (4G)}{3}{subsection.3.1}%
 \contentsline {subsection}{\numberline {3.2}Mesures en technologie 2G (GSM/EDGE)}{4}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}R\'eponses d\'etaill\'ees aux questions de la Partie A}{4}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.3}R\'eponses aux questions}{4}{subsection.3.3}%
 \contentsline {paragraph}{1. Identification du pays et des op\'erateurs \`a partir du MCC et du MNC}{4}{section*.6}%
 \contentsline {paragraph}{2. Calcul des fr\'equences montante et descendante des canaux 2G}{5}{section*.7}%
 \contentsline {paragraph}{3. V\'erification de la coh\'erence entre dBm et ASU}{5}{section*.8}%
