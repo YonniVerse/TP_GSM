@@ -1,0 +1,1071 @@
+\documentclass[11pt,a4paper]{article}
+
+% ===================== PACKAGES =====================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[provide=*,french]{babel}
+
+% Guillemets fran\c{c}ais (repli si babel-french n'est pas install\'e)
+\providecommand{\og}{\leavevmode\guillemotleft{}~}
+\providecommand{\fg}{\unskip~\guillemotright{}}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titling}
+\usepackage[font=small,labelfont=bf,labelsep=endash]{caption}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\definecolor{blueESP}{HTML}{0040FF}
+
+\graphicspath{{images/}{./}}
+
+\hypersetup{
+    hidelinks
+}
+
+% ===================== CONFIG LISTINGS (sans couleur) =====================
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    columns=fullflexible,
+    showstringspaces=false,
+    tabsize=2
+}
+
+% ===================== PAGE DE GARDE =====================
+\title{Rapport de TP 1 \\ Découverte et administration d'un système Linux}
+\author{}
+\date{}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+
+%%% Bandeau institutionnel
+\noindent
+\begin{minipage}[c]{0.17\textwidth}
+    \centering
+    \includegraphics[height=1.5cm]{logoESPA.jpg}
+\end{minipage}
+\hfill
+\begin{minipage}[c]{0.64\textwidth}
+    \centering
+    {\bfseries REPOBLIKAN'I MADAGASIKARA}\\[2pt]
+    {\scriptsize\bfseries FITIAVANA - TANINDRAZANA - FANDROSOANA}\\[5pt]
+    {\scriptsize\bfseries MINIST\`ERE DE L'ENSEIGNEMENT SUP\'ERIEUR ET DE\\[1pt] LA RECHERCHE SCIENTIFIQUE}
+\end{minipage}
+\hfill
+\begin{minipage}[c]{0.17\textwidth}
+    \centering
+    \includegraphics[height=1.5cm]{logoUNA.jpg}
+\end{minipage}
+
+\vspace{1.4cm}
+
+{\bfseries \'ECOLE SUP\'ERIEURE POLYTECHNIQUE D'ANTSIRANANA}
+
+\vspace{1.2cm}
+
+{\bfseries Mention Master STIC}
+
+\vspace{1cm}
+
+%%% Bandeau du type de document
+\noindent\rule{\textwidth}{1.6pt}\\[-6pt]
+\noindent\rule{\textwidth}{0.5pt}\\[7pt]
+{\bfseries RAPPORT DE TRAVAUX PRATIQUES}\\[7pt]
+\noindent\rule{\textwidth}{0.5pt}\\[-6pt]
+\noindent\rule{\textwidth}{1.6pt}
+
+\vspace{1cm}
+
+{\bfseries T\'el\'ecommunications et R\'eseaux, 4\`eme Ann\'ee}
+
+\vspace{2.2cm}
+
+%%% Titre
+{\color{blueESP}\Huge D\'ecouverte et administration\\[6pt] d'un syst\`eme Linux \par}
+
+\vspace{2.8cm}
+
+{\small Par :}
+
+\vspace{0.4cm}
+
+{\normalsize TINOGNY Yonni}
+
+\vspace{1.6cm}
+
+{\small Enseignant :}
+
+\vspace{0.4cm}
+
+{\normalsize Mr. RAKOTOARIJAONA Raonirivo}
+
+\vfill
+
+{\itshape Ann\'ee Universitaire 2025 - 2026}
+
+\vspace{0.5cm}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ===================== INTRODUCTION =====================
+\section{Introduction}
+
+Ce TP porte sur la d\'ecouverte et l'administration d'un syst\`eme Linux, dans le cadre du parcours
+T\'el\'ecommunications et R\'eseaux. Linux constitue l'environnement de r\'ef\'erence dans ce domaine, que ce
+soit pour les routeurs, les serveurs, les \'equipements op\'erateurs ou les outils de virtualisation comme GNS3.
+La ma\^itrise de cet environnement est donc une comp\'etence de base pour la suite du cursus et pour
+l'insertion professionnelle.
+
+Le travail s'organise en quatre parties principales : l'installation d'un syst\`eme Linux en cohabitation
+avec Windows, la gestion des utilisateurs et des groupes, l'installation d'applications utiles au cursus, et
+enfin une s\'erie de manipulations correspondant \`a un niveau d'administration interm\'ediaire (processus,
+r\'eseau, journaux, automatisation par script shell).
+
+Ce rapport pr\'esente les d\'emarches suivies, les commandes utilis\'ees et leur justification, ainsi que les
+r\'esultats obtenus \`a chaque \'etape.
+
+% ===================== OBJECTIFS =====================
+\section{Objectifs p\'edagogiques}
+
+\`A l'issue de ce TP, l'\'etudiant doit \^etre capable d'installer un syst\`eme Linux en dual-boot avec Windows,
+en ma\^itrisant le partitionnement de disque et l'amor\c{c}age via GRUB. Il doit \'egalement savoir cr\'eer et
+administrer des comptes utilisateurs et des groupes, et comprendre le mod\`ele de permissions Unix.
+
+L'installation, la configuration et la v\'erification d'un ensemble d'applications professionnelles utiles \`a un
+\'etudiant en T\'el\'ecommunications et R\'eseaux font aussi partie des comp\'etences vis\'ees, tout comme la
+manipulation des commandes fondamentales et interm\'ediaires de l'administration syst\`eme (processus,
+services, paquets, r\'eseau, journaux). Le TP demande enfin d'automatiser une t\^ache r\'ecurrente \`a l'aide
+d'un script shell Bash, afin de d\'evelopper l'autonomie et la rigueur m\'ethodologique n\'ecessaires \`a la
+poursuite d'\'etudes et \`a l'insertion professionnelle.
+
+% ===================== PRÉREQUIS ET MATÉRIEL =====================
+\section{Pr\'erequis et environnement de travail}
+
+Ce TP suppose des notions de base sur l'architecture d'un ordinateur (disque dur, BIOS/UEFI,
+partitions) et sur le r\^ole du noyau et du syst\`eme de fichiers dans un syst\`eme d'exploitation. Une
+utilisation \'el\'ementaire d'un terminal est un atout, sans \^etre obligatoire.
+
+Le mat\'eriel demand\'e par le sujet comprend un ordinateur sous Windows 10 ou 11 disposant d'au moins
+60 Go d'espace libre, une cl\'e USB de 8 Go minimum, une image ISO d'Ubuntu 24.04 LTS, un logiciel de
+cr\'eation de cl\'e USB bootable et un acc\`es Internet.
+
+Le poste effectivement utilis\'e est un HP ProBook 450 G5 \'equip\'e de deux disques :
+
+\begin{itemize}[noitemsep]
+    \item un SSD de 256 Go (\texttt{sdb}) portant d\'ej\`a Windows 11 et Debian 13 en dual-boot ;
+    \item un disque dur de 500 Go (\texttt{sda}, WDC WD5000LPLX) d\'ecoup\'e en deux volumes NTFS de donn\'ees.
+\end{itemize}
+
+La machine d\'emarre en mode UEFI. Le syst\`eme install\'e est Ubuntu 24.04 LTS (nom de code \emph{noble}),
+\`a partir de l'image \texttt{ubuntu-24.04-desktop-amd64\_3.iso}.
+
+% ===================== PARTIE 1 =====================
+\section{Installation d'Ubuntu 24.04 en multi-boot}
+
+\subsection{Adaptation du sujet au poste utilis\'e}
+
+Le sujet part d'un poste sous Windows seul et demande de r\'eduire la partition C: pour y installer Linux.
+Ce sc\'enario ne s'appliquait pas ici, puisque le SSD contenait d\'ej\`a deux syst\`emes. R\'eduire encore
+les partitions du SSD aurait \'et\'e risqu\'e et aurait laiss\'e peu de marge \`a Windows.
+
+L'objectif a donc \'et\'e adapt\'e : installer Ubuntu comme troisi\`eme syst\`eme, en r\'ecup\'erant de
+l'espace sur le disque dur secondaire. Le principe du TP reste le m\^eme, c'est-\`a-dire lib\'erer un espace
+non allou\'e, cr\'eer les partitions \`a la main et int\'egrer le nouveau syst\`eme au menu d'amor\c{c}age.
+Seul le disque cible change.
+
+\subsection{Pr\'eparation du disque et de la cl\'e USB}
+
+Le partitionnement a \'et\'e r\'ealis\'e avec GParted depuis Debian, et non depuis la Gestion des disques de
+Windows. Travailler hors ligne sur les partitions vis\'ees \'evite les probl\`emes li\'es au d\'emarrage
+rapide de Windows, qui laisse le syst\`eme de fichiers NTFS dans un \'etat incoh\'erent. Les deux volumes
+NTFS du disque dur ont \'et\'e r\'eduits pour lib\'erer environ 40 Go non allou\'es en fin de disque, sans
+toucher aux donn\'ees existantes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{gparted_partition_hdd.jpeg}
+    \caption{Lib\'eration d'un espace non allou\'e sur le disque dur avec GParted}
+\end{figure}
+
+La cl\'e USB bootable a \'et\'e pr\'epar\'ee avec Ventoy plut\^ot qu'avec Rufus. Ventoy installe un
+chargeur sur la cl\'e et permet ensuite d'y copier plusieurs images ISO, que l'on choisit au d\'emarrage.
+C'est plus souple que Rufus, qui r\'e\'ecrit la cl\'e enti\`ere pour une seule image. L'image d'Ubuntu a
+\'et\'e s\'electionn\'ee dans le menu Ventoy.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{ventoy_choix_iso.jpeg}
+    \caption{S\'election de l'image ISO d'Ubuntu depuis le menu Ventoy}
+\end{figure}
+
+Sur ce mod\`ele de HP, les touches d'acc\`es ne sont pas celles indiqu\'ees dans le sujet. F10 ouvre le
+BIOS/UEFI et F9 ouvre directement le menu de d\'emarrage. C'est depuis ce menu que la cl\'e USB a \'et\'e
+choisie. On y voit d\'ej\`a les entr\'ees UEFI des syst\`emes pr\'esents sur la machine.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{boot_menu_f9.jpeg}
+    \caption{Menu de d\'emarrage du poste, accessible par la touche F9}
+\end{figure}
+
+\subsection{Installation et partitionnement manuel}
+
+L'installateur a \'et\'e lanc\'e en mode interactif. L'option d'installation des pilotes propri\'etaires a
+\'et\'e coch\'ee, ce qui est n\'ecessaire sur ce poste pour la carte graphique et surtout pour la carte
+Wi-Fi, utilis\'ee ensuite dans toute la partie r\'eseau.
+
+Le sujet demande de contr\^oler pr\'ecis\'ement le d\'ecoupage du disque. L'option de partitionnement
+manuel a donc \'et\'e retenue, plut\^ot que l'installation automatique \`a c\^ot\'e des syst\`emes
+d\'etect\'es. Quatre partitions ont \'et\'e cr\'e\'ees sur l'espace lib\'er\'e du disque \texttt{sda} :
+
+\begin{itemize}[noitemsep]
+    \item \texttt{/} en ext4, 28 Go, pour le syst\`eme ;
+    \item \texttt{/boot/efi} en FAT32, 1,13 Go, partition syst\`eme EFI propre \`a Ubuntu ;
+    \item \texttt{swap}, 4 Go, dimensionn\'e sans hibernation ;
+    \item \texttt{/home} en ext4, 9,82 Go, pour les donn\'ees utilisateur.
+\end{itemize}
+
+S\'eparer \texttt{/home} de la racine permet de r\'einstaller le syst\`eme plus tard sans perdre les
+fichiers personnels. Le SSD portant Windows et Debian n'a pas \'et\'e touch\'e. Le chargeur d'amor\c{c}age a
+\'et\'e install\'e sur \texttt{sda}, le disque qui porte la nouvelle partition EFI.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{partitionnement_manuel_ubuntu.jpeg}
+    \caption{Partitionnement manuel d'Ubuntu : racine, /boot/efi, swap et /home}
+\end{figure}
+
+\subsection{V\'erification de l'amor\c{c}age}
+
+La v\'erification a \'et\'e faite de deux fa\c{c}ons. D'abord avec Grub Customizer depuis Debian, qui liste
+les entr\'ees du menu et confirme la pr\'esence des trois syst\`emes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{grub_customizer_menu.jpeg}
+    \caption{Entr\'ees du menu d'amor\c{c}age list\'ees par Grub Customizer}
+\end{figure}
+
+Ensuite au red\'emarrage, sur le menu GRUB lui-m\^eme. Debian, Ubuntu 24.04 LTS sur \texttt{/dev/sda4} et
+Windows Boot Manager sur \texttt{/dev/sdb1} y figurent bien. Les trois syst\`emes ont \'et\'e d\'emarr\'es
+l'un apr\`es l'autre pour s'assurer qu'aucun n'avait \'et\'e cass\'e par l'installation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{grub.jpg}
+    \caption{Menu GRUB au d\'emarrage, avec les trois syst\`emes install\'es}
+\end{figure}
+
+La d\'etection des autres syst\`emes est assur\'ee par \texttt{os-prober}, appel\'e automatiquement lors de
+la r\'eg\'en\'eration du fichier de configuration de GRUB. Sa sortie est visible pendant les mises \`a jour
+de noyau : elle indique le chemin du chargeur de Windows et la partition de Debian.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{update_grub_osprober.png}
+    \caption{D\'etection de Windows et de Debian par os-prober lors de la mise \`a jour de GRUB}
+\end{figure}
+
+\paragraph{R\'esultats obtenus.}
+L'espace n\'ecessaire a \'et\'e lib\'er\'e sur le disque dur sans perte de donn\'ees. Ubuntu 24.04 est
+install\'e sur \texttt{/dev/sda4}, aux c\^ot\'es de Windows 11 et Debian 13 rest\'es sur le SSD. Le triple
+boot fonctionne et la commande \texttt{sudo update-grub} n'a pas eu besoin d'\^etre relanc\'ee \`a la main,
+puisque \texttt{os-prober} avait d\'ej\`a r\'ecup\'er\'e les deux autres syst\`emes.
+
+% ===================== PARTIE 2 =====================
+\section{Cr\'eation et gestion des utilisateurs}
+
+Le mod\`ele multi-utilisateur est au c\oe{}ur de l'administration Linux. Cette partie porte sur la cr\'eation de
+comptes, la gestion des groupes et le syst\`eme de permissions Unix.
+
+\subsection{Cr\'eation et configuration d'un utilisateur}
+
+Un premier utilisateur a \'et\'e cr\'e\'e avec un r\'epertoire personnel et Bash comme shell par d\'efaut :
+
+\begin{lstlisting}[language=bash]
+sudo useradd -m -s /bin/bash etudiant1
+sudo passwd etudiant1
+sudo usermod -aG sudo etudiant1
+id etudiant1
+cat /etc/passwd | grep etudiant1
+\end{lstlisting}
+
+L'option \texttt{-m} cr\'ee le r\'epertoire personnel, et \texttt{-s /bin/bash} fixe le shell de connexion.
+Sans \texttt{-m}, le compte existe mais l'utilisateur se retrouve sans dossier de travail. L'option
+\texttt{-aG} de \texttt{usermod} ajoute le compte au groupe \texttt{sudo} sans effacer ses autres groupes ;
+oublier le \texttt{-a} remplacerait toute la liste, ce qui est une erreur classique.
+
+La v\'erification se fait avec \texttt{id}, qui affiche les identifiants num\'eriques et les groupes, et avec
+la ligne correspondante de \texttt{/etc/passwd}, qui donne le r\'epertoire personnel et le shell.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{creation_etudiant1.png}
+    \caption{V\'erification du compte etudiant1 avec \texttt{id} et \texttt{/etc/passwd}}
+\end{figure}
+
+\paragraph{R\'esultats obtenus.}
+La commande \texttt{id etudiant1} renvoie \texttt{uid=1001(etudiant1) gid=1001(etudiant1)
+groups=1001(etudiant1),27(sudo)}. L'appartenance au groupe 27, qui est le groupe \texttt{sudo}, confirme que
+les droits d'administration ont bien \'et\'e accord\'es. La ligne de \texttt{/etc/passwd} est
+\texttt{etudiant1:x:1001:1001::/home/etudiant1:/bin/bash}. Le champ mot de passe contient un \texttt{x},
+car l'empreinte du mot de passe est stock\'ee dans \texttt{/etc/shadow}, lisible par root uniquement.
+
+\subsection{Compte \`a usage restreint}
+
+Un second utilisateur, \og invite \fg{}, a \'et\'e cr\'e\'e sans droits d'administration. Il sert \`a
+illustrer la gestion du cycle de vie d'un compte : d\'efinition d'une date d'expiration, verrouillage puis
+d\'everrouillage.
+
+\begin{lstlisting}[language=bash]
+sudo useradd -m -s /bin/bash invite
+sudo passwd invite
+sudo chage -E 2026-12-01 invite
+sudo passwd -l invite
+sudo passwd -u invite
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{compte_invite.png}
+    \caption{Cr\'eation du compte invite, expiration puis verrouillage et d\'everrouillage}
+\end{figure}
+
+\paragraph{R\'esultats obtenus.}
+Au moment de d\'efinir le mot de passe, le module de qualit\'e a renvoy\'e l'avertissement
+\texttt{BAD PASSWORD: The password fails the dictionary check}. Comme la commande \'etait lanc\'ee avec
+\texttt{sudo}, le mot de passe a tout de m\^eme \'et\'e accept\'e : root peut passer outre cette v\'erification,
+alors qu'un utilisateur ordinaire aurait \'et\'e bloqu\'e.
+
+La commande \texttt{chage -E 2026-12-01} fixe la date au-del\`a de laquelle le compte ne pourra plus se
+connecter, ce qui est utile pour un acc\`es temporaire. Les commandes \texttt{passwd -l} et \texttt{passwd -u}
+r\'epondent toutes les deux \texttt{password changed}. Le verrouillage n'efface pas le mot de passe : il place
+simplement un point d'exclamation devant son empreinte dans \texttt{/etc/shadow}, ce qui rend toute
+comparaison impossible. Le d\'everrouillage retire ce caract\`ere et restaure l'acc\`es.
+
+\subsection{Gestion des groupes}
+
+Un groupe de travail a ensuite \'et\'e cr\'e\'e, puis renseign\'e avec l'utilisateur concern\'e :
+
+\begin{lstlisting}[language=bash]
+sudo groupadd reseaux4a
+sudo usermod -aG reseaux4a etudiant1
+getent group reseaux4a
+\end{lstlisting}
+
+\texttt{getent} interroge les bases du syst\`eme (fichiers locaux, LDAP, NIS) selon l'ordre d\'efini dans
+\texttt{/etc/nsswitch.conf}. Elle est donc pr\'ef\'erable \`a un simple \texttt{cat /etc/group}, qui ne verrait
+que les groupes locaux.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{gestion_groupe.png}
+    \caption{Cr\'eation du groupe reseaux4a et v\'erification de ses membres}
+\end{figure}
+
+\paragraph{R\'esultats obtenus.}
+La sortie \texttt{reseaux4a:x:1003:etudiant1} montre que le groupe porte le GID 1003 et compte un seul
+membre secondaire. Le groupe primaire d'un utilisateur n'appara\^it pas dans cette liste, ce qui explique
+que seul \texttt{etudiant1} y figure.
+
+\subsection{Permissions et propri\'et\'es des fichiers}
+
+Le syst\`eme de permissions Unix repose sur trois cat\'egories (propri\'etaire, groupe, autres) et trois droits
+(lecture r, \'ecriture w, ex\'ecution x). Un dossier de travail partag\'e a \'et\'e cr\'e\'e pour illustrer ce
+m\'ecanisme :
+
+\begin{lstlisting}[language=bash]
+sudo mkdir -p /projets/reseaux
+sudo chown etudiant1:reseaux4a /projets/reseaux
+sudo chmod 770 /projets/reseaux
+ls -ld /projets/reseaux
+sudo chmod g+s /projets/reseaux
+ls -ld /projets/reseaux
+\end{lstlisting}
+
+Le mode \texttt{770} accorde lecture, \'ecriture et ex\'ecution au propri\'etaire (7) et au groupe (7), et
+aucun droit aux autres (0). Sur un r\'epertoire, le droit d'ex\'ecution correspond en fait au droit de
+traverser le dossier, donc d'acc\'eder \`a son contenu. Sans lui, les droits de lecture ne servent \`a rien.
+
+Le bit setgid, pos\'e par \texttt{g+s}, change le comportement par d\'efaut : tout fichier cr\'e\'e dans le
+dossier appartient au groupe du dossier parent et non au groupe primaire de son cr\'eateur. C'est ce qui rend
+le partage coh\'erent dans la dur\'ee. Sa pr\'esence se lit dans la sortie de \texttt{ls -ld}, o\`u le
+\texttt{x} des droits du groupe est remplac\'e par un \texttt{s}, ce qui donne \texttt{drwxrws---}.
+
+% INSÉRER ICI : capture de "ls -ld /projets/reseaux" avant et après le chmod g+s
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.85\textwidth]{permissions_dossier.png}
+%     \caption{Droits du dossier /projets/reseaux avant et apr\`es l'activation du bit setgid}
+% \end{figure}
+
+% ===================== PARTIE 3 =====================
+\section{Installation des applications utiles}
+
+\subsection{Mise \`a jour pr\'ealable du syst\`eme}
+
+Avant toute installation, la liste des paquets et le syst\`eme ont \'et\'e mis \`a jour :
+
+\begin{lstlisting}[language=bash]
+sudo apt update && sudo apt upgrade -y
+\end{lstlisting}
+
+\texttt{apt update} ne fait que rafra\^ichir les index des d\'ep\^ots ; c'est \texttt{apt upgrade} qui
+installe r\'eellement les nouvelles versions. Les deux commandes sont encha\^in\'ees avec \texttt{\&\&} pour
+que la seconde ne s'ex\'ecute que si la premi\`ere a r\'eussi.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{maj_systeme.png}
+    \caption{Mise \`a jour du syst\`eme apr\`es l'installation}
+\end{figure}
+
+Sur une installation neuve, 51,3 Mo d'index ont \'et\'e t\'el\'echarg\'es et 658 paquets \'etaient \`a mettre
+\`a jour. La mise \`a niveau a aussi install\'e un noyau plus r\'ecent (s\'erie HWE), ce qui a d\'eclench\'e la
+reg\'en\'eration de l'initramfs et du menu GRUB vue plus haut. Le nettoyage a ensuite \'et\'e fait avec :
+
+\begin{lstlisting}[language=bash]
+sudo apt autoremove && sudo apt autoclean
+\end{lstlisting}
+
+\subsection{Applications install\'ees}
+
+Les applications demand\'ees par le sujet ont ensuite \'et\'e install\'ees. Chacune r\'epond \`a un besoin
+pr\'ecis de la fili\`ere :
+
+\begin{itemize}[noitemsep]
+    \item \textbf{VLC} : lecture de flux audio et vid\'eo, tests de streaming RTP, RTSP et UDP ;
+    \item \textbf{Evince} : lecture des polycopi\'es et des rapports au format PDF ;
+    \item \textbf{TeX Live et TeXstudio} : r\'edaction des rapports scientifiques en LaTeX ;
+    \item \textbf{Visual Studio Code} : \'edition de scripts shell, de code Python ou C et de fichiers de configuration ;
+    \item \textbf{GNS3} : simulation de topologies r\'eseau et de protocoles de t\'el\'ecommunication ;
+    \item \textbf{netsniff-ng} : capture de trafic bas niveau, en compl\'ement de Wireshark ;
+    \item \textbf{Wireshark} : analyse fine des protocoles r\'eseau ;
+    \item \textbf{OpenSSH Server} : administration \`a distance, utilis\'ee dans les TP de supervision ;
+    \item \textbf{Git} : gestion de versions des projets et des scripts ;
+    \item \textbf{build-essential} : cha\^ine de compilation C et C++.
+\end{itemize}
+
+\begin{lstlisting}[language=bash]
+sudo apt install vlc
+sudo apt install evince
+sudo apt install texlive-full texstudio
+sudo apt install wireshark
+sudo apt install netsniff-ng
+sudo apt install openssh-server
+sudo apt install git
+sudo apt install build-essential
+sudo apt install htop
+\end{lstlisting}
+
+\subsection{Cas particuliers rencontr\'es}
+
+Trois installations n'ont pas suivi exactement la proc\'edure du sujet.
+
+\paragraph{Visual Studio Code.}
+Le sujet propose \texttt{sudo snap install code --classic}. Le paquet Debian officiel de Microsoft a \'et\'e
+pr\'ef\'er\'e, car il ajoute le d\'ep\^ot \texttt{packages.microsoft.com} au syst\`eme et permet donc de
+suivre les mises \`a jour avec \texttt{apt}, sans passer par un second gestionnaire de paquets.
+
+\begin{lstlisting}[language=bash]
+sudo apt install ./code_1.131.0-1785237861_amd64.deb
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{install_vscode.png}
+    \caption{Installation de Visual Studio Code \`a partir du paquet .deb officiel}
+\end{figure}
+
+La capture montre aussi un message r\'ep\'et\'e \texttt{Waiting for cache lock}. Une autre instance d'apt
+tournait encore dans un second onglet du terminal. Le verrou \texttt{/var/lib/dpkg/lock-frontend} garantit
+qu'un seul processus modifie la base des paquets \`a la fois. Il a suffi d'attendre la fin de l'op\'eration
+pr\'ec\'edente.
+
+\paragraph{GNS3.}
+Les paquets \texttt{gns3-gui} et \texttt{gns3-server} ne sont pas pr\'esents dans les d\'ep\^ots standards
+d'Ubuntu 24.04. Le d\'ep\^ot PPA du projet a donc \'et\'e ajout\'e avant l'installation :
+
+\begin{lstlisting}[language=bash]
+sudo add-apt-repository ppa:gns3/ppa
+sudo apt install gns3-gui gns3-server
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{gns3_ppa.png}
+    \caption{Ajout du d\'ep\^ot PPA de GNS3 puis installation des paquets}
+\end{figure}
+
+Pendant l'installation, le paquet \texttt{ubridge} demande si les utilisateurs non privil\'egi\'es doivent
+pouvoir lancer GNS3. La r\'eponse affirmative a \'et\'e retenue : les membres des groupes \texttt{sudo} et
+\texttt{admin} sont alors ajout\'es au groupe \texttt{ubridge}, qui re\c{c}oit les capacit\'es de capture. Cela
+\'evite de faire tourner tout GNS3 en tant que root, donc limite la surface d'exposition.
+
+\paragraph{netsniff-ng.}
+L'installation de ce paquet entra\^ine la suppression de \texttt{systemd-timesyncd}, remplac\'e par
+\texttt{ntpsec}. Les deux services assurent la synchronisation horaire et ne peuvent pas coexister. Ce
+changement est sans cons\'equence ici, mais il montre l'int\'er\^et de lire le r\'ecapitulatif propos\'e par
+apt avant de valider, en particulier la ligne \og The following packages will be REMOVED \fg{}.
+
+\subsection{V\'erification des installations}
+
+Le bon fonctionnement a \'et\'e contr\^ol\'e soit par le lancement de l'interface graphique, soit en ligne de
+commande :
+
+\begin{lstlisting}[language=bash]
+apt list --installed | grep vlc
+code --version
+vlc --version
+wireshark --version
+git --version
+gcc --version
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{verif_vlc.png}
+    \caption{V\'erification de l'installation de VLC et de ses greffons}
+\end{figure}
+
+\paragraph{R\'esultats obtenus.}
+Toutes les applications demand\'ees ont \'et\'e install\'ees. La v\'erification de VLC renvoie la version
+3.0.20-3build6 pour le paquet principal et pour l'ensemble de ses greffons, tous marqu\'es
+\texttt{[installed]} ou \texttt{[installed,automatic]}. La mention \texttt{automatic} indique les paquets
+tir\'es comme d\'ependances, qui seront retir\'es automatiquement par \texttt{apt autoremove} si VLC est
+d\'esinstall\'e. L'avertissement \og apt does not have a stable CLI interface \fg{} rappelle que
+\texttt{apt} est pr\'evu pour un usage interactif ; dans un script, il vaut mieux utiliser
+\texttt{apt-get} ou \texttt{dpkg-query}.
+
+% ===================== PARTIE 4 =====================
+\section{Manipulations de niveau interm\'ediaire}
+
+Cette partie regroupe les comp\'etences qui distinguent un utilisateur d\'ebutant d'un utilisateur
+interm\'ediaire, avec un accent particulier sur l'administration r\'eseau.
+
+\subsection{Gestion des processus}
+
+\begin{lstlisting}[language=bash]
+ps aux
+ps aux | grep obsidian
+top
+htop
+kill -9 <PID>
+\end{lstlisting}
+
+\texttt{ps aux} donne une photographie des processus \`a un instant donn\'e, alors que \texttt{top} et
+\texttt{htop} rafra\^ichissent l'affichage en continu. En pratique, on filtre presque toujours la sortie de
+\texttt{ps} avec \texttt{grep} pour retrouver un processus pr\'ecis.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{processus_kill.png}
+    \caption{Recherche d'un processus avec \texttt{ps aux | grep} puis arr\^et forc\'e avec \texttt{kill -9}}
+\end{figure}
+
+\paragraph{R\'esultats obtenus.}
+L'application test\'ee appara\^it sous la forme de plusieurs processus : un processus principal et des
+processus fils charg\'es du rendu et du r\'eseau. Le PID du processus principal (18030) a \'et\'e transmis \`a
+\texttt{kill -9}, ce qui a fait dispara\^itre toute l'arborescence. La derni\`ere ligne de la sortie
+correspond au \texttt{grep} lui-m\^eme, qui appara\^it dans sa propre recherche.
+
+Le signal 9 (\texttt{SIGKILL}) ne peut pas \^etre intercept\'e par le programme, qui est arr\^et\'e sans
+pouvoir enregistrer son \'etat. Il vaut donc mieux essayer d'abord \texttt{kill <PID>}, qui envoie
+\texttt{SIGTERM} et laisse le processus se fermer proprement.
+
+\subsection{Gestion des services}
+
+Le service SSH a servi d'exemple, car il est directement utile pour la suite du cursus.
+
+\begin{lstlisting}[language=bash]
+systemctl status ssh
+sudo systemctl start ssh
+sudo systemctl enable ssh
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{statut_ssh.png}
+    \caption{\'Etat du service SSH avant et apr\`es d\'emarrage}
+\end{figure}
+
+\paragraph{R\'esultats obtenus.}
+Avant d\'emarrage, le service est \texttt{inactive (dead)} et marqu\'e \texttt{disabled}. Apr\`es
+\texttt{systemctl start}, il passe \`a \texttt{active (running)} avec le PID 20047, et les journaux
+confirment l'\'ecoute sur le port 22 en IPv4 et en IPv6.
+
+La commande \texttt{systemctl enable ssh} a ensuite cr\'e\'e les liens symboliques dans
+\texttt{/etc/systemd/system/multi-user.target.wants/}, ce qui rend le d\'emarrage automatique au prochain
+amor\c{c}age. Le champ \texttt{Loaded} passe alors de \texttt{disabled} \`a \texttt{enabled}. La distinction
+est importante : \texttt{start} agit sur la session en cours, \texttt{enable} agit sur les d\'emarrages
+suivants.
+
+On remarque aussi la ligne \texttt{TriggeredBy: ssh.socket}. Ubuntu active le service \`a la demande via un
+socket systemd, ce qui explique que le service puisse repasser \`a \texttt{inactive} tant qu'aucune connexion
+n'arrive.
+
+\subsection{Gestion des paquets}
+
+\begin{lstlisting}[language=bash]
+apt list --installed | grep vlc
+sudo apt remove <paquet>
+sudo apt autoremove
+dpkg -l
+\end{lstlisting}
+
+Ces commandes permettent de v\'erifier qu'un paquet est install\'e, de le d\'esinstaller, de nettoyer les
+d\'ependances devenues inutiles, et de lister l'ensemble des paquets du syst\`eme. \texttt{apt remove} laisse
+les fichiers de configuration en place ; \texttt{apt purge} les supprime \'egalement.
+
+\subsection{Administration r\'eseau}
+
+\subsubsection{\'Etat des interfaces}
+
+\begin{lstlisting}[language=bash]
+ip a
+ip route
+ss -tuln
+ping -c 4 8.8.8.8
+traceroute www.univ.mg
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{ip_a.png}
+    \caption{Interfaces r\'eseau et adresses IP du poste}
+\end{figure}
+
+\paragraph{R\'esultats obtenus.}
+Le poste pr\'esente quatre interfaces. \texttt{lo} est l'interface de bouclage en 127.0.0.1.
+\texttt{enp1s0} est l'interface Ethernet, marqu\'ee \texttt{NO-CARRIER} et \texttt{state DOWN} car aucun
+c\^able n'est branch\'e. \texttt{wlp2s0} est l'interface Wi-Fi, qui porte l'adresse 10.251.134.190/24 obtenue
+en DHCP, comme l'indiquent le mot-cl\'e \texttt{dynamic} et le bail de 3550 secondes. \texttt{virbr0} est
+un pont virtuel en 192.168.122.1/24 cr\'e\'e par libvirt, utilis\'e par les machines virtuelles.
+
+\subsubsection{Configuration d'une adresse IP statique avec Netplan}
+
+Netplan lit les fichiers YAML de \texttt{/etc/netplan/} et g\'en\`ere la configuration du gestionnaire de
+r\'eseau sous-jacent. Sur une version bureau d'Ubuntu, ce gestionnaire est NetworkManager, ce qui impose de
+pr\'eciser \texttt{renderer: NetworkManager}. Le fichier suivant a \'et\'e cr\'e\'e :
+
+\begin{lstlisting}
+network:
+  version: 2
+  renderer: NetworkManager
+  wifis:
+    wlp2s0:
+      dhcp4: no
+      access-points:
+        "Airbox-4G":
+          password: "********"
+      addresses:
+        - 10.251.134.191/24
+      routes:
+        - to: default
+          via: 10.251.134.118
+      nameservers:
+        addresses: [8.8.8.8, 1.1.1.1]
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{netplan_yaml.png}
+    \caption{Fichier \texttt{/etc/netplan/99-config-statique.yaml} (mot de passe masqu\'e)}
+\end{figure}
+
+L'adresse choisie est voisine de celle attribu\'ee par le DHCP, mais volontairement diff\'erente pour
+\'eviter un conflit. Le fichier est num\'erot\'e 99 pour qu'il soit lu en dernier et prenne le pas sur la
+configuration par d\'efaut. Il a ensuite \'et\'e trait\'e ainsi :
+
+\begin{lstlisting}[language=bash]
+sudo chmod 600 /etc/netplan/99-config-statique.yaml
+sudo netplan generate
+sudo netplan try
+\end{lstlisting}
+
+Le \texttt{chmod 600} r\'epond \`a un avertissement de Netplan : le fichier contient la cl\'e du r\'eseau
+Wi-Fi en clair et ne doit \^etre lisible que par root. \texttt{netplan generate} valide la syntaxe et produit
+les fichiers du gestionnaire de r\'eseau. \texttt{netplan try} applique la configuration en laissant un
+compte \`a rebours ; sans confirmation, l'ancienne configuration est restaur\'ee. C'est une pr\'ecaution
+utile quand on travaille \`a distance, o\`u une erreur couperait l'acc\`es \`a la machine.
+
+\paragraph{Premi\`ere tentative, en \'echec.}
+L'activation du profil g\'en\'er\'e a \'echou\'e avec le message \texttt{Connection activation failed: The
+Wi-Fi network could not be found}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{netplan_echec.png}
+    \caption{\'Echec de l'activation du profil Netplan et adresse toujours obtenue en DHCP}
+\end{figure}
+
+Le nom du r\'eseau inscrit dans le fichier ne correspondait pas au point d'acc\`es r\'eellement port\'ee. La
+v\'erification avec \texttt{ip a show wlp2s0} le confirme : l'interface conservait l'adresse 10.251.134.190
+en mode \texttt{dynamic}, donc toujours fournie par le DHCP. La configuration \'etait syntaxiquement
+correcte, mais inapplicable dans ce contexte.
+
+\paragraph{Seconde tentative, r\'eussie.}
+La manipulation a \'et\'e reprise sur un r\'eseau disponible. Le fichier a
+\'et\'e adapt\'e au SSID et au plan d'adressage de ce r\'eseau, puis le profil correspondant a \'et\'e
+activ\'e :
+
+\begin{lstlisting}[language=bash]
+nmcli connection show --active
+sudo nmcli connection up "netplan-wlp2s0-3A-XL"
+ip a show wlp2s0
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{ip_statique.png}
+    \caption{Activation du profil Netplan et adresse statique effectivement appliqu\'ee}
+\end{figure}
+
+\paragraph{R\'esultats obtenus.}
+Le message \texttt{Connection successfully activated} confirme l'activation. L'interface porte ensuite
+l'adresse 10.151.30.191/24. Le mot-cl\'e \texttt{dynamic} a disparu de la sortie de \texttt{ip a}, et le bail
+DHCP n'appara\^it plus : l'adresse est bien fixe. La mention \texttt{noprefixroute} indique que la route du
+r\'eseau local n'est pas ajout\'ee automatiquement, la table de routage \'etant construite \`a partir de la
+section \texttt{routes} du fichier.
+
+\subsubsection{Pare-feu}
+
+Un pare-feu de base a \'et\'e mis en place avec UFW, en n'ouvrant que le port n\'ecessaire \`a
+l'administration \`a distance :
+
+\begin{lstlisting}[language=bash]
+sudo ufw allow 22/tcp
+sudo ufw enable
+sudo ufw status verbose
+\end{lstlisting}
+
+L'ordre des commandes a son importance. Autoriser le port 22 avant d'activer le pare-feu \'evite de couper
+une session SSH en cours, puisque la politique par d\'efaut d'UFW bloque tout le trafic entrant.
+
+% INSÉRER ICI : capture de "sudo ufw status verbose"
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.85\textwidth]{ufw_status.png}
+%     \caption{R\`egles actives du pare-feu UFW}
+% \end{figure}
+
+\subsubsection{Capture de trafic}
+
+\begin{lstlisting}[language=bash]
+sudo tcpdump -i wlp2s0 -n
+sudo netsniff-ng -i wlp2s0 -o capture.pcap
+\end{lstlisting}
+
+Les exemples du sujet utilisent \texttt{eth0}. Ce nom n'existe plus sur Ubuntu 24.04, qui applique la
+convention de nommage pr\'evisible des interfaces : \texttt{enp1s0} pour l'Ethernet et \texttt{wlp2s0} pour le
+Wi-Fi. Les noms d\'ependent de l'emplacement mat\'eriel du p\'eriph\'erique, ce qui \'evite qu'ils changent
+d'un d\'emarrage \`a l'autre. Les commandes ont donc \'et\'e adapt\'ees \`a l'interface r\'eellement active.
+
+L'option \texttt{-n} de \texttt{tcpdump} d\'esactive la r\'esolution DNS des adresses. L'affichage est plus
+rapide et, surtout, la capture ne g\'en\`ere pas elle-m\^eme de trafic suppl\'ementaire.
+
+\subsection{Simulation sous GNS3}
+
+GNS3 a \'et\'e install\'e depuis le d\'ep\^ot du projet et se lance correctement en version 2.2.60. La
+fen\^etre des pr\'ef\'erences donne acc\`es aux diff\'erentes familles d'\'equipements \'emulables :
+routeurs Dynamips, machines Qemu, conteneurs Docker et commutateurs int\'egr\'es.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{gns3_lance.png}
+    \caption{GNS3 2.2.60 lanc\'e, fen\^etre des mod\`eles de routeurs IOS}
+\end{figure}
+
+\subsubsection{Topologie r\'ealis\'ee}
+
+La topologie demand\'ee par le sujet comporte deux routeurs, un commutateur et deux PC. Les routeurs sont
+\'emul\'es par Dynamips \`a partir d'une image IOS, le commutateur est le mod\`ele Ethernet int\'egr\'e \`a
+GNS3, et les deux postes utilisent VPCS. VPCS n'est pas une machine virtuelle compl\`ete : c'est un
+simulateur de station tr\`es l\'eger qui sait seulement recevoir une adresse, r\'epondre au ping et lancer un
+traceroute. C'est suffisant ici et bien moins co\^uteux en ressources qu'une VM.
+
+Le montage relie PC1 au commutateur, le commutateur \`a la premi\`ere interface de R1, les deux routeurs
+entre eux, puis PC2 directement sur R2. Deux r\'eseaux locaux distincts sont ainsi s\'epar\'es par une
+liaison de transit, ce qui oblige \`a faire du routage pour les faire communiquer.
+
+\begin{center}
+\begin{tabular}{llll}
+\hline
+\textbf{\'Equipement} & \textbf{Interface} & \textbf{Adresse IP} & \textbf{R\^ole} \\
+\hline
+PC1 & e0      & 192.168.1.10/24 & Station du LAN 1 \\
+R1  & f0/0    & 192.168.1.1/24  & Passerelle du LAN 1 \\
+R1  & f0/1    & 10.0.0.1/30     & Liaison inter-routeurs \\
+R2  & f0/1    & 10.0.0.2/30     & Liaison inter-routeurs \\
+R2  & f0/0    & 192.168.2.1/24  & Passerelle du LAN 2 \\
+PC2 & e0      & 192.168.2.10/24 & Station du LAN 2 \\
+\hline
+\end{tabular}
+\end{center}
+
+Une liaison en /30 a \'et\'e choisie entre les deux routeurs. Ce masque ne laisse que deux adresses
+utilisables, ce qui correspond exactement au besoin d'un lien point \`a point et \'evite de gaspiller un
+r\'eseau entier.
+
+La configuration des adresses sur les PC se fait directement dans la console VPCS :
+
+\begin{lstlisting}
+PC1> ip 192.168.1.10 255.255.255.0 192.168.1.1
+PC2> ip 192.168.2.10 255.255.255.0 192.168.2.1
+\end{lstlisting}
+
+C\^ot\'e routeurs, chaque interface a \'et\'e adress\'ee puis activ\'ee. Par d\'efaut une interface IOS est
+administrativement d\'esactiv\'ee, d'o\`u la commande \texttt{no shutdown} qu'il ne faut pas oublier :
+
+\begin{lstlisting}
+R1(config)# interface fastEthernet 0/0
+R1(config-if)# ip address 192.168.1.1 255.255.255.0
+R1(config-if)# no shutdown
+R1(config-if)# exit
+R1(config)# ip route 192.168.2.0 255.255.255.0 10.0.0.2
+\end{lstlisting}
+
+La derni\`ere ligne est indispensable. Un routeur ne conna\^it au d\'epart que les r\'eseaux directement
+connect\'es \`a ses interfaces. Sans route vers le LAN oppos\'e, R1 re\c{c}oit bien les paquets de PC1 mais
+ne sait pas o\`u les envoyer et les rejette. Une route statique sym\'etrique a donc \'et\'e ajout\'ee sur R2
+vers 192.168.1.0/24.
+
+\paragraph{R\'esultats obtenus.}
+La validation s'est faite en trois temps, du plus proche au plus lointain. Le ping de PC1 vers sa passerelle
+192.168.1.1 confirme d'abord que le lien local et le commutateur fonctionnent. Le ping de R1 vers 10.0.0.2
+v\'erifie ensuite la liaison inter-routeurs. Le ping de PC1 vers PC2, enfin, aboutit \'egalement, ce qui
+prouve que les deux routes statiques sont correctes et que le routage entre les deux LAN est
+op\'erationnel.
+
+Cette progression est la m\'ethode \`a retenir : tester segment par segment plut\^ot que de lancer
+directement le ping de bout en bout. En cas d'\'echec, elle indique imm\'ediatement quel maillon est en
+cause.
+
+\subsection{Journaux syst\`emes et supervision}
+
+\begin{lstlisting}[language=bash]
+journalctl -xe
+journalctl -u ssh
+df -h
+du -sh /home/*
+free -h
+\end{lstlisting}
+
+\texttt{journalctl} lit le journal binaire de systemd. L'option \texttt{-u} filtre sur une unit\'e pr\'ecise,
+ce qui est le r\'eflexe \`a avoir quand un service refuse de d\'emarrer. Les commandes \texttt{df},
+\texttt{du} et \texttt{free} renseignent respectivement sur l'espace disque disponible, la taille des
+r\'epertoires utilisateurs et l'occupation de la m\'emoire. L'option \texttt{-h} affiche des unit\'es
+lisibles plut\^ot que des blocs.
+
+Sur ce poste, \texttt{df -h} est utile pour surveiller la partition racine, limit\'ee \`a 28 Go, que
+l'installation de \texttt{texlive-full} et de GNS3 remplit rapidement.
+
+\subsection{Recherche et traitement de texte}
+
+\begin{lstlisting}[language=bash]
+grep -i 'error' /var/log/syslog
+sed 's/ancien/nouveau/g' fichier.txt
+awk -F: '{print $1}' /etc/passwd
+find / -name '*.log' -mtime -1
+\end{lstlisting}
+
+\texttt{grep} recherche un motif, ici les lignes contenant \og error \fg{} sans distinction de casse gr\^ace
+\`a \texttt{-i}. \texttt{sed} remplace du texte, le \texttt{g} final portant le remplacement sur toutes les
+occurrences d'une m\^eme ligne et non seulement sur la premi\`ere. \texttt{awk} d\'ecoupe chaque ligne selon
+un s\'eparateur, ici le deux-points, et n'affiche que le premier champ, c'est-\`a-dire la liste des noms
+d'utilisateurs. \texttt{find} recherche des fichiers selon des crit\`eres, ici les journaux modifi\'es depuis
+moins de 24 heures.
+
+Ces quatre commandes sont la base du d\'epannage sur un \'equipement distant, o\`u l'on ne dispose que d'un
+terminal pour fouiller des fichiers de plusieurs milliers de lignes.
+
+\subsection{Archivage et compression}
+
+\begin{lstlisting}[language=bash]
+tar -czvf archive.tar.gz /projets/reseaux
+tar -xzvf archive.tar.gz
+\end{lstlisting}
+
+La premi\`ere commande cr\'ee une archive compress\'ee, la seconde l'extrait. Les options se lisent une \`a
+une : \texttt{c} pour cr\'eer, \texttt{x} pour extraire, \texttt{z} pour la compression gzip, \texttt{v} pour
+l'affichage d\'etaill\'e et \texttt{f} pour d\'esigner le fichier cible.
+
+\subsection{Automatisation par script shell}
+
+Un script Bash nomm\'e \texttt{surveillance\_reseau.sh} a \'et\'e r\'edig\'e pour enregistrer
+p\'eriodiquement l'\'etat de la connectivit\'e :
+
+\begin{lstlisting}[language=bash]
+#!/bin/bash
+# surveillance_reseau.sh
+# Teste la connectivite vers un serveur externe et journalise le resultat.
+
+LOG="$HOME/surveillance_reseau.log"
+DATE=$(date '+%Y-%m-%d %H:%M:%S')
+
+if ping -c 1 -W 2 8.8.8.8 &> /dev/null; then
+    echo "$DATE - Connexion OK" >> "$LOG"
+else
+    echo "$DATE - Connexion PERDUE" >> "$LOG"
+fi
+\end{lstlisting}
+
+Quelques points m\'eritent d'\^etre expliqu\'es. La redirection \texttt{\&> /dev/null} envoie la sortie
+standard et la sortie d'erreur vers le p\'eriph\'erique nul : seul le code de retour de \texttt{ping}
+int\'eresse le script. L'option \texttt{-c 1} limite l'envoi \`a un seul paquet, et \texttt{-W 2} borne
+l'attente \`a deux secondes pour que le script ne reste pas bloqu\'e si le r\'eseau est coup\'e.
+
+Le sujet propose d'\'ecrire dans \texttt{/var/log/surveillance\_reseau.log}. Ce chemin n'est accessible en
+\'ecriture qu'\`a root, alors qu'une t\^ache plac\'ee dans la crontab d'un utilisateur s'ex\'ecute avec les
+droits de cet utilisateur. Le fichier de log a donc \'et\'e plac\'e dans le r\'epertoire personnel. Pour le
+conserver dans \texttt{/var/log}, il faudrait soit passer par la crontab de root, soit cr\'eer le fichier au
+pr\'ealable et en donner la propri\'et\'e \`a l'utilisateur.
+
+Le script a ensuite \'et\'e rendu ex\'ecutable, test\'e \`a la main, puis planifi\'e :
+
+\begin{lstlisting}[language=bash]
+chmod +x surveillance_reseau.sh
+./surveillance_reseau.sh
+cat ~/surveillance_reseau.log
+crontab -e
+\end{lstlisting}
+
+\begin{lstlisting}
+# Execution toutes les 5 minutes
+*/5 * * * * /home/etudiant1/surveillance_reseau.sh
+\end{lstlisting}
+
+Les cinq champs d'une ligne crontab correspondent aux minutes, aux heures, au jour du mois, au mois et au
+jour de la semaine. La notation \texttt{*/5} en premi\`ere position d\'eclenche l'ex\'ecution toutes les cinq
+minutes. Le chemin du script doit \^etre absolu, car cron s'ex\'ecute dans un environnement minimal o\`u la
+variable \texttt{PATH} est tr\`es r\'eduite.
+
+% INSÉRER ICI : capture de l'exécution du script, de la crontab et du fichier de log
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.85\textwidth]{execution_script.png}
+%     \caption{Ex\'ecution du script et contenu du fichier de log}
+% \end{figure}
+
+Cette combinaison de script et de planification reproduit, \`a petite \'echelle, ce que font les sondes de
+supervision d\'eploy\'ees chez un op\'erateur : un test simple, r\'ep\'et\'e \`a intervalle fixe, dont la
+trace horodat\'ee permet de reconstituer les p\'eriodes d'indisponibilit\'e.
+
+% ===================== ANALYSE CRITIQUE =====================
+\section{Analyse critique des difficult\'es rencontr\'ees}
+
+\subsection{Un poste qui ne correspondait pas au sc\'enario du sujet}
+
+La premi\`ere difficult\'e a \'et\'e d'ordre m\'ethodologique. Le sujet d\'ecrit une machine sous Windows
+seul, alors que le poste comportait d\'ej\`a deux syst\`emes sur un SSD presque plein. Appliquer la
+proc\'edure telle quelle aurait conduit \`a r\'eduire encore les partitions existantes.
+
+Le choix a \'et\'e d'installer Ubuntu sur le disque dur secondaire, apr\`es y avoir lib\'er\'e de l'espace.
+Cela demandait de bien identifier les disques, car une confusion entre \texttt{sda} et \texttt{sdb} au moment
+d'installer le chargeur d'amor\c{c}age aurait pu rendre les autres syst\`emes inaccessibles. Les captures de
+GParted et de l'installateur ont servi de contr\^ole \`a chaque \'etape. Le r\'esultat est un triple boot
+fonctionnel.
+
+\subsection{Touches d'acc\`es au BIOS diff\'erentes}
+
+Le sujet indique F12, F2, \'Echap ou Suppr pour atteindre le menu de d\'emarrage. Aucune de ces touches ne
+fonctionne sur ce mod\`ele de HP, o\`u il faut appuyer sur F9 pour le menu de d\'emarrage et F10 pour le
+BIOS. Le point est mineur, mais il illustre que ces raccourcis d\'ependent du constructeur et qu'il faut
+toujours v\'erifier la documentation de la machine.
+
+\subsection{Paquets absents des d\'ep\^ots standards}
+
+GNS3 n'est pas distribu\'e dans les d\'ep\^ots officiels d'Ubuntu 24.04. La commande donn\'ee par le sujet
+\'echoue donc telle quelle. L'ajout du PPA du projet a r\'esolu le probl\`eme. Cela pose toutefois une
+question de confiance : un PPA est un d\'ep\^ot tiers, et l'ajouter revient \`a autoriser son mainteneur \`a
+installer des paquets sur le syst\`eme. Ici le d\'ep\^ot est celui de l'\'editeur du logiciel, ce qui est
+acceptable.
+
+Le m\^eme raisonnement a conduit \`a installer Visual Studio Code depuis le paquet officiel de Microsoft
+plut\^ot que depuis Snap, afin de garder un seul gestionnaire de paquets \`a suivre.
+
+\subsection{Verrou du gestionnaire de paquets}
+
+Plusieurs installations ont \'echou\'e sur des messages de verrou :
+\texttt{Could not get lock /var/lib/dpkg/lock-frontend}. Deux causes distinctes ont \'et\'e rencontr\'ees.
+Dans le premier cas, la commande avait \'et\'e lanc\'ee sans \texttt{sudo} et le refus \'etait un simple
+probl\`eme de droits. Dans le second, une autre instance d'apt tournait dans un onglet voisin du terminal.
+
+La bonne pratique consiste \`a identifier le processus propri\'etaire du verrou, dont apt affiche le PID,
+puis \`a attendre qu'il se termine. Supprimer le fichier de verrou \`a la main est possible mais dangereux :
+cela peut laisser la base dpkg dans un \'etat incoh\'erent.
+
+\subsection{Configuration r\'eseau statique sur une interface Wi-Fi}
+
+C'est la difficult\'e la plus instructive de ce TP. Le fichier Netplan \'etait syntaxiquement valide, accept\'e
+par \texttt{netplan generate}, et pourtant l'adresse restait fournie par le DHCP. L'activation du profil
+retournait \texttt{The Wi-Fi network could not be found}.
+
+L'analyse a montr\'e que le probl\`eme ne venait pas du fichier mais du contexte. Sur une interface Wi-Fi,
+Netplan ne configure pas seulement une adresse : il d\'ecrit aussi le point d'acc\`es auquel se connecter.
+Si le SSID d\'eclar\'e n'est pas \`a port\'ee, le profil ne peut pas s'activer et NetworkManager conserve la
+connexion pr\'ec\'edente. La v\'erification par \texttt{ip a show wlp2s0} a permis de le confirmer, la mention
+\texttt{dynamic} indiquant clairement une adresse encore obtenue en DHCP.
+
+La manipulation a \'et\'e reprise sur un autre r\'eseau, avec le SSID et la passerelle correspondants. Le
+profil s'est activ\'e et l'adresse statique a bien \'et\'e prise en compte. La le\c{c}on \`a retenir est
+qu'une configuration valide n'est pas forc\'ement applicable, et qu'il faut toujours v\'erifier le r\'esultat
+sur l'interface plut\^ot que de se fier au seul retour de la commande d'application.
+
+\subsection{Politique de mot de passe}
+
+La cr\'eation du compte \og invite \fg{} a d\'eclench\'e l'avertissement
+\texttt{BAD PASSWORD: The password fails the dictionary check}. Le mot de passe a tout de m\^eme \'et\'e
+accept\'e, car la commande \'etait lanc\'ee en tant que root. Ce comportement m\'erite d'\^etre connu : un
+administrateur peut cr\'eer sans s'en rendre compte des comptes dont le mot de passe ne respecte pas la
+politique qu'il impose aux autres utilisateurs.
+
+% ===================== CONCLUSION =====================
+\section{Conclusion}
+
+Ce TP a permis de parcourir le cycle complet d'administration d'un poste Linux, depuis l'installation du
+syst\`eme jusqu'\`a l'automatisation d'une t\^ache de supervision. L'installation en multi-boot a impos\'e
+une rigueur particuli\`ere sur le partitionnement et sur le choix du disque d'amor\c{c}age, o\`u une erreur
+aurait pu rendre les autres syst\`emes inaccessibles.
+
+La gestion des utilisateurs et des groupes a mis en \'evidence le mod\`ele de permissions Unix, avec la
+distinction entre propri\'etaire, groupe et autres, et le r\^ole du bit setgid dans un dossier partag\'e.
+L'installation des applications a pr\'epar\'e l'environnement de travail des prochains TP, tout en montrant
+que les commandes d'un \'enonc\'e ne s'appliquent pas toujours telles quelles : d\'ep\^ots manquants, noms
+d'interfaces diff\'erents, conflits entre paquets.
+
+Les manipulations de niveau interm\'ediaire ont surtout \'et\'e l'occasion de travailler la m\'ethode. La
+configuration Netplan qui ne s'appliquait pas en est le meilleur exemple : la commande ne renvoyait pas
+d'erreur de syntaxe, et seule la v\'erification de l'\'etat r\'eel de l'interface a permis de comprendre ce
+qui se passait. C'est exactement le r\'eflexe attendu en exploitation r\'eseau, o\`u l'on valide toujours une
+configuration par son effet observable et non par le simple retour de la commande.
+
+La simulation sous GNS3 a permis de v\'erifier ces acquis sur une topologie rout\'ee, avec la validation
+progressive de la connectivit\'e segment par segment. Il reste \`a approfondir la mise en place d'une
+supervision plus compl\`ete que le simple test de connectivit\'e r\'ealis\'e ici, par exemple avec un
+outil de collecte comme SNMP. L'ensemble constitue une base solide pour la suite du cursus en
+T\'el\'ecommunications et R\'eseaux.
+
+% ===================== BIBLIOGRAPHIE =====================
+\section{Ressources bibliographiques et compl\'ementaires}
+
+\begin{itemize}[noitemsep]
+    \item Documentation officielle Ubuntu : \url{https://help.ubuntu.com/}
+    \item Documentation officielle Debian : \url{https://www.debian.org/doc/}
+    \item \textit{The Linux Command Line}, W. Shotts (ouvrage libre)
+    \item Documentation Netplan : \url{https://netplan.readthedocs.io/}
+    \item Documentation GNS3 : \url{https://docs.gns3.com/}
+    \item Manuel des commandes Linux : \texttt{man <commande>}
+\end{itemize}
+
+\end{document}

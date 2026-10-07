@@ -1,0 +1,534 @@
+TP N° 1 GSM — Cellule serveuse et niveau de signal
+
+Réseaux de télécommunications mobiles — 4ème année
+
+TRAVAUX PRATIQUES GSM — TP N° 1
+Identification de la cellule serveuse et mesure du niveau de signal à l’aide des applications Android
+Cell Monitor et Cell Signal Monitoring
+Rubrique
+
+Détail
+
+Niveau
+
+4ème année — Télécommunications / Réseaux
+
+Enseignant
+
+RAKOTOARIJAONA Raonirivo N.
+
+Durée
+
+3 heures (salle de TP + bâtiment) — rapport à rendre sous 1 semaine
+
+Applications
+
+Cell Monitor, Cell Signal Monitoring
+
+Organisation
+
+Binômes ou trinômes (un smartphone Android minimum par groupe)
+
+Livrables
+
+Captures d’écran annotées + rapport de TP au format PDF
+
+Date
+
+30 Septembre 2026
+
+1. Objectifs pédagogiques
+À l’issue de ce TP, l’étudiant doit être capable de :
+• identifier sur un terminal réel les paramètres d’une cellule : MCC, MNC, LAC/TAC, Cell ID (CID), ARFCN,
+BSIC (ou PCI/EARFCN en 4G) ;
+• retrouver le pays, l’opérateur et la bande de fréquence à partir de ces paramètres ;
+• mesurer et interpréter le niveau de signal reçu (RSSI / RxLev en GSM, RSRP / RSRQ / SINR en LTE) et le
+convertir entre dBm et ASU ;
+• mettre en évidence l’influence de l’environnement (murs, étages, main de l’utilisateur, mobilité) sur
+la propagation radio.
+
+2. Rappels théoriques
+2.1 Identification d’une cellule
+Paramètre
+
+Signification
+
+Rôle dans le réseau
+
+MCC
+
+Mobile Country Code (3 chiffres)
+
+Identifie le pays
+
+MNC
+
+Mobile Network Code (2 ou 3 chiffres)
+
+Identifie l’opérateur dans le pays
+
+LAC (2G/3G) / TAC (4G)
+
+Location / Tracking Area Code
+
+Zone de localisation utilisée pour le paging et
+la mise à jour de localisation
+
+CID / ECI
+
+Cell Identity
+
+Identifiant de la cellule dans la zone (en LTE :
+ECI = eNB ID × 256 + Cell ID local)
+
+CGI
+
+MCC + MNC + LAC + CID
+
+Identifiant mondial unique de la cellule
+
+ARFCN / EARFCN
+
+Numéro de canal radio
+
+Permet de retrouver la fréquence porteuse
+
+Page 1 / 7
+
+TP N° 1 GSM — Cellule serveuse et niveau de signal
+
+Paramètre
+
+Signification
+
+Rôle dans le réseau
+
+Code d’identité de station / Physical
+Cell ID
+
+BSIC (2G) / PCI (4G)
+
+Distingue deux cellules utilisant la même
+fréquence
+
+2.2 Niveaux de signal
+En GSM, le niveau reçu est exprimé en dBm (RSSI) ou en ASU (Arbitrary Strength Unit). La relation est :
+P(dBm) = 2 × ASU − 113
+
+(ASU compris entre 0 et 31 ; 99 = inconnu)
+
+En LTE, on utilise surtout le RSRP (puissance du signal de référence), avec : P(dBm) = ASU − 140 (ASU de 0 à
+97).
+Qualité
+
+GSM — RSSI (dBm)
+
+LTE — RSRP (dBm)
+
+LTE — SINR (dB)
+
+Excellent
+
+≥ −70
+
+≥ −80
+
+≥ 20
+
+Bon
+
+−70 à −85
+
+−80 à −90
+
+13 à 20
+
+Moyen
+
+−86 à −100
+
+−90 à −100
+
+0 à 13
+
+Faible
+
+−101 à −110
+
+< −100
+
+<0
+
+Pas de service
+
+< −110
+
+≈ −120 et moins
+
+—
+
+Ces seuils sont des valeurs indicatives usuelles ; ils peuvent varier selon les constructeurs et les opérateurs.
+
+2.3 Correspondance ARFCN – fréquence (GSM)
+Bande
+
+ARFCN (n)
+
+Fréquence montante (MHz)
+
+Fréquence descendante (MHz)
+
+GSM 900 (P-GSM)
+
+1 à 124
+
+Fup = 890 + 0,2 × n
+
+Fdown = Fup + 45
+
+DCS 1800
+
+512 à 885
+
+Fup = 1710,2 + 0,2 × (n − 512)
+
+Fdown = Fup + 95
+
+2.4 Phénomènes de propagation
+Le niveau reçu diminue avec la distance (affaiblissement de parcours). S’y ajoutent l’effet de masque
+(évanouissement lent dû aux bâtiments, murs, relief) et les multi-trajets (évanouissement rapide dû à
+l’addition de plusieurs échos du signal). La pénétration dans un bâtiment coûte typiquement 10 à 20 dB.
+
+3. Matériel et préparation
+• Smartphone Android avec une carte SIM active (ces applications ne fonctionnent généralement pas
+sur iPhone, iOS ne donnant pas accès à ces informations).
+• Application(s) à installer depuis le Google Play Store : Cell Monitor, Cell Signal Monitoring.
+• Autorisations : accorder l’accès à la localisation et au téléphone ; activer le GPS (obligatoire depuis
+Android 10 pour lire les informations cellulaires).
+• Mode réseau : Paramètres > Réseau mobile > Type de réseau préféré. Selon le terminal et
+l’opérateur, il est possible de forcer « 2G uniquement ». Si la 2G n’est pas disponible, réaliser les
+mesures en 4G et le signaler dans le rapport.
+• Outil de capture : capture d’écran du téléphone (généralement Marche/Arrêt + Volume bas).
+⚠ Consignes de sécurité et de confidentialité
+
+Page 2 / 7
+
+TP N° 1 GSM — Cellule serveuse et niveau de signal
+
+Ne jamais effectuer de mesures en conduisant ; les mesures en mobilité se font à pied ou en tant que
+passager.
+Masquer sur les captures l’IMEI, l’IMSI, le numéro de téléphone et toute information personnelle.
+Les applications sont en lecture seule : ne modifier aucun paramètre caché ou code de service
+(*#*#…#*#*).
+
+4. Partie A — Cell Monitor : identification de la cellule serveuse
+Durée conseillée : 1 heure. Lieu : salle de TP.
+
+A.1 Manipulations
+1. Lancer Cell Monitor et accorder les autorisations demandées.
+2. Repérer l’écran principal affichant la cellule serveuse (serving cell).
+3. Relever tous les paramètres d’identification et de niveau disponibles.
+4. Si le téléphone est double SIM, réaliser les relevés pour chaque SIM (opérateurs différents si possible).
+5. Basculer le mode réseau (2G → 3G → 4G) et observer l’évolution des paramètres affichés.
+
+A.2 Captures d’écran à fournir
+Capture A1 — Écran principal de la cellule serveuse (paramètres MCC, MNC, LAC, CID visibles).
+Capture A2 — Même écran en mode 2G uniquement (si disponible).
+Capture A3 — Même écran en mode 4G (LTE).
+Capture A4 — Écran de la seconde SIM ou d’un second opérateur (si disponible).
+
+A.3 Tableau de relevés
+Paramètre
+
+Mesure 2G
+
+Mesure 3G
+
+Mesure 4G
+
+Opérateur
+MCC
+MNC
+LAC / TAC
+CID / ECI
+ARFCN / UARFCN / EARFCN
+BSIC / PSC / PCI
+Niveau (dBm)
+Niveau (ASU)
+
+A.4 Questions
+1. À partir du MCC et du MNC relevés, identifier le pays et l’opérateur. Justifier à l’aide d’une source.
+2. Calculer les fréquences montante et descendante correspondant à l’ARFCN relevé en 2G. Dans quelle
+bande se trouve la cellule ?
+Page 3 / 7
+
+TP N° 1 GSM — Cellule serveuse et niveau de signal
+
+3. Vérifier la cohérence entre la valeur en dBm et la valeur en ASU affichées (formule du § 2.2).
+4. En 4G, décomposer l’ECI relevé en eNB ID et Cell ID local. Que représente l’eNB ID ?
+5. Écrire le CGI complet de la cellule serveuse 2G.
+6. Pourquoi le LAC (ou TAC) reste-t-il souvent identique alors que le CID peut changer ?
+
+5. Partie B — Cell Signal Monitoring : mesure et analyse du niveau de signal
+Durée conseillée : 1 h 30. Lieu : bâtiment et abords extérieurs.
+
+B.1 Manipulations
+1. Lancer Cell Signal Monitoring et repérer l’affichage du niveau de signal et, si proposé, le graphique
+d’évolution temporelle.
+2. Effectuer une mesure stable (attendre environ 30 secondes) à chacun des points indiqués dans le
+tableau B.3.
+3. Pour chaque point, noter le niveau, la cellule serveuse (CID) et la technologie utilisée.
+4. Réaliser un parcours à pied d’environ 5 minutes en laissant l’historique s’enregistrer, puis capturer le
+graphique obtenu.
+5. Au point 3, passer un appel de 1 minute et observer si le niveau ou la cellule change par rapport au
+mode veille.
+
+B.2 Captures d’écran à fournir
+Capture B1 — Niveau de signal à l’extérieur, en vue dégagée.
+Capture B2 — Niveau de signal au point le plus défavorable (sous-sol, cage d’escalier, ascenseur…).
+Capture B3 — Graphique d’évolution du signal pendant le parcours à pied.
+Capture B4 — Écran pendant un appel en cours.
+
+B.3 Tableau de mesures
+N°
+
+Point de mesure
+
+1
+
+Extérieur, vue dégagée
+
+2
+
+Près d’une fenêtre
+
+3
+
+Centre d’une salle
+
+4
+
+Couloir intérieur
+
+5
+
+Cage d’escalier / sous-sol
+
+6
+
+Étage le plus élevé accessible
+
+7
+
+Téléphone dans la main fermée
+
+8
+
+Pendant un appel (point 3)
+
+Techno
+
+CID
+
+Niveau (dBm)
+
+ASU
+
+Qualité
+
+B.4 Questions
+1. Tracer un histogramme du niveau (dBm) en fonction du point de mesure. Commenter les écarts
+observés.
+2. Estimer l’affaiblissement de pénétration du bâtiment (écart entre les points 1 et 3). Comparer aux
+valeurs typiques (10 à 20 dB).
+Page 4 / 7
+
+TP N° 1 GSM — Cellule serveuse et niveau de signal
+
+3. Sur le graphique B3, distinguer l’évanouissement lent (effet de masque) de l’évanouissement rapide
+(multi-trajets). Expliquer leur origine physique.
+4. Pourquoi le simple fait de fermer la main sur le téléphone modifie-t-il le niveau reçu ?
+5. Une différence de 3 dB correspond à quel rapport de puissance ? Et 10 dB ? Appliquer à deux de vos
+mesures.
+6. Le niveau de signal suffit-il à juger de la qualité d’une liaison ? Citer au moins un autre indicateur
+(RxQual, SINR, RSRQ, BER…).
+
+6. Partie C — Comparaison des deux applications
+Au même point fixe et au même moment, relever la cellule serveuse avec les deux applications, puis
+compléter le tableau.
+Critère
+
+Cell Monitor
+
+Cell Signal Monitoring
+
+CID affiché
+Niveau affiché (dBm)
+Paramètres disponibles
+Historique / graphique
+Export des données
+Ergonomie (note /5)
+Usage le plus adapté
+
+Capture C1 — Captures de la même cellule dans les deux applications, prises à quelques secondes
+d’intervalle.
+
+Questions
+1. Les deux applications donnent-elles des valeurs identiques ? Expliquer les éventuels écarts
+(rafraîchissement, moyennage, source de l’information via l’API Android).
+2. Laquelle choisiriez-vous pour identifier une cellule ? pour suivre le signal dans le temps ? Justifier.
+
+7. Consignes pour les captures d’écran
+• Nommage : TP1-GSM_Groupe-X_A1.png, TP1-GSM_Groupe-X_B2.png, etc. (code de la capture
+indiqué dans l’énoncé).
+• Annotation : entourer ou flécher les paramètres utilisés dans la réponse (outil d’édition du téléphone
+ou logiciel de dessin).
+• Légende : chaque capture insérée dans le rapport doit porter un numéro de figure, le lieu, l’heure et
+une phrase d’explication.
+• Lisibilité : capture entière, non floue, sans recadrage qui supprimerait des informations utiles.
+• Confidentialité : flouter IMEI, IMSI, numéro de téléphone et coordonnées GPS précises si elles
+concernent un domicile.
+
+Page 5 / 7
+
+TP N° 1 GSM — Cellule serveuse et niveau de signal
+
+8. Structure attendue du rapport
+Section
+
+Contenu attendu
+
+Longueur indicative
+
+Page de garde
+
+Titre du TP, noms du groupe, filière, date, enseignant
+
+1 page
+
+1. Introduction
+
+Contexte, objectifs, rappel bref de l’architecture GSM
+
+½ page
+
+2. Matériel et méthode
+
+Modèle du téléphone, version Android, opérateur(s), versions
+des applications, lieux de mesure
+
+½ page
+
+3. Résultats — Partie A
+
+Captures A1–A4, tableau A.3, réponses aux questions
+
+1 à 2 pages
+
+4. Résultats — Partie B
+
+Captures B1–B4, tableau B.3, histogramme, réponses
+
+1 à 2 pages
+
+5. Comparaison — Partie C
+
+Tableau comparatif, capture C1, réponses
+
+½ page
+
+6. Conclusion
+
+Bilan, difficultés rencontrées, limites des mesures
+
+½ page
+
+Annexes
+
+Captures supplémentaires, données brutes, références
+
+Libre
+
+Modalités de remise
+Format : PDF unique nommé TP1-GSM_Groupe-X_Noms.pdf, accompagné du dossier des captures
+d’écran originales (.zip).
+Délai : une semaine après la séance de TP.
+Toute valeur ou capture reprise d’un autre groupe entraîne la note de 0 pour les groupes concernés.
+
+9. Barème d’évaluation
+Critère
+
+Points
+
+Qualité et conformité des captures d’écran (nommage, annotation, légendes)
+
+3
+
+Partie A — relevés, calculs et réponses
+
+5
+
+Partie B — mesures, histogramme et analyse
+
+6
+
+Partie C — comparaison des applications
+
+2
+
+Rigueur scientifique (unités, calculs, justification des interprétations)
+
+2
+
+Présentation, structure et qualité rédactionnelle du rapport
+
+2
+
+Total
+
+20
+
+Page 6 / 7
+
+TP N° 1 GSM — Cellule serveuse et niveau de signal
+
+Annexe — Glossaire
+Sigle
+
+Signification
+
+ARFCN
+
+Absolute Radio Frequency Channel Number — numéro de canal radio
+
+ASU
+
+Arbitrary Strength Unit — unité de niveau de signal utilisée par Android
+
+BSC / BTS
+
+Base Station Controller / Base Transceiver Station
+
+CGI
+
+Cell Global Identity — identifiant mondial de la cellule
+
+eNB
+
+eNodeB — station de base 4G (LTE)
+
+RxLev / RxQual
+
+Niveau reçu / qualité reçue (taux d’erreur binaire) en GSM
+
+RSRP / RSRQ
+
+Reference Signal Received Power / Quality (LTE)
+
+SINR
+
+Signal to Interference plus Noise Ratio
+
+Page 7 / 7
+
+
